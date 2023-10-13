@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONENCODING utf-8
 
 #set work directory
-WORKDIR /workdir
+WORKDIR /workdir/src
 
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -27,7 +27,6 @@ COPY . /workdir/src
 # python dependencies
 RUN pip install --upgrade pip
 RUN pip install django
-RUN pip install gunicorn
 RUN pip install -r /workdir/src/requirements.txt
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
