@@ -18,7 +18,7 @@ services:
   app:
     depends_on:
       - db
-    image: suhun/django:0.1.4
+    image: suhun/django:0.1.5
     volumes:
       - ./app_data:/var/www/html
     command: bash -c "python manage.py makemigrations &&
