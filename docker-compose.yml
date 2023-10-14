@@ -7,7 +7,7 @@ services:
     volumes:
       - ./db_data:/var/lib/mysql
     ports:
-      - "3307:3306"
+      - '3307:3306'
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: db
@@ -40,7 +40,8 @@ services:
       - ./nginx-conf:/etc/nginx/conf.d
       - ./__collect_static:/data/static
     ports:
-      - 80:80
+      - '80:80'
+      - '443:443'
     depends_on:
       - app
 
