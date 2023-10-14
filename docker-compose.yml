@@ -37,7 +37,7 @@ services:
   nginx:
     image: nginx
     volumes:
-      - ./nginx-conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx-conf:/etc/nginx/conf.d
       - ./__collect_static:/data/static
     ports:
       - 80:80
