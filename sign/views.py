@@ -69,7 +69,7 @@ def sign(request):
             return Response(data=data)
         else:
 
-            Users.objects.create(id=id, username=username, password=pw_crypted, token=None)
+            Users.objects.create(id=id, username=username, password=pw_crypted, token="")
             data = dict(
                 # msg='회원가입 성공,'
                 code='000',
