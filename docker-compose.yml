@@ -4,6 +4,9 @@ services:
   db:
     image: mysql:5.7
     container_name: db
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     volumes:
       - ./db_data:/var/lib/mysql
     ports:
@@ -18,7 +21,7 @@ services:
   app:
     depends_on:
       - db
-    image: suhun/django:0.1.5
+    image: suhun/django
     volumes:
       - ./app_data:/var/www/html
     command: bash -c "python manage.py makemigrations &&
