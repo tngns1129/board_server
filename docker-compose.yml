@@ -47,7 +47,7 @@ services:
     ports:
       - '80:80'
       - '443:443'
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    command: "/bin/sh -c 'chmod 755 -R /etc/letsencrypt & chmod 755 -R /var/www & while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     depends_on:
       - app
 
