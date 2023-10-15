@@ -29,4 +29,4 @@ RUN pip install --upgrade pip
 RUN pip install django
 RUN pip install -r /workdir/src/requirements.txt
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
