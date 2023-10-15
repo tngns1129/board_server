@@ -29,7 +29,7 @@ fi
 
 echo "### Creating dummy certificate for $domains ..."
 path="/etc/letsencrypt/live/$domains"
-mkdir -p "$data_path/conf/live/$domains"
+sudo mkdir -p "$data_path/conf/live/$domains"
 chown -R "ec2-user" "$data_path"
 chgrp -R "ec2-user" "$data_path"
 docker-compose -f docker-compose.yml run --rm --entrypoint "\
