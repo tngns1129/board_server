@@ -42,10 +42,13 @@ services:
     image: nginx
     volumes:
       - ./nginx-conf:/etc/nginx/conf.d
-      - ./__collect_static:/data/static
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     ports:
       - '80:80'
       - '443:443'
+    command: "/bin/sh -c 'mkdir -p /var/www/certbot/.well-known/acme-challenge & chmod 755 -R /var/www & 
+                    while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     depends_on:
       - app
 
