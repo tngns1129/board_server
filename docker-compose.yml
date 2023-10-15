@@ -6,7 +6,7 @@ services:
     container_name: db
     volumes:
       - ./db_data:/var/lib/mysql
-      - ./mysql:/etc
+      - ./mysql:/etc/mysql
     ports:
       - '3307:3306'
     environment:
