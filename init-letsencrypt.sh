@@ -32,7 +32,7 @@ path="/etc/letsencrypt/live/$domains"
 mkdir -p "$data_path/conf/live/$domains"
 chown -R "ec2-user" "$data_path"
 chgrp -R "ec2-user" "$data_path"
-docker-compose -f docker compose.prod.yml run --rm --entrypoint "\
+sudo docker-compose -f docker compose.prod.yml run --rm --entrypoint "\
   openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1\
     -keyout '$path/privkey.pem' \
     -out '$path/fullchain.pem' \
@@ -40,11 +40,11 @@ docker-compose -f docker compose.prod.yml run --rm --entrypoint "\
 echo
 
 echo "### Starting nginx ..."
-docker-compose -f docker compose.prod.yml up --force-recreate -d nginx
+sudo docker-compose -f docker compose.prod.yml up --force-recreate -d nginx
 echo
 
 echo "### Deleting dummy certificate for $domains ..."
-docker-compose -f docker compose.prod.yml run --rm --entrypoint "\
+sudo docker-compose -f docker compose.prod.yml run --rm --entrypoint "\
   rm -Rf /etc/letsencrypt/live/$domains && \
   rm -Rf /etc/letsencrypt/archive/$domains && \
   rm -Rf /etc/letsencrypt/renewal/$domains.conf" certbot
@@ -66,7 +66,7 @@ esac
 # Enable staging mode if needed
 if [ $staging != "0" ]; then staging_arg="--staging"; fi
 
-docker-compose -f docker compose.prod.yml run --rm --entrypoint "\
+sudo docker-compose -f docker compose.prod.yml run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
     $staging_arg \
     $email_arg \
@@ -77,4 +77,4 @@ docker-compose -f docker compose.prod.yml run --rm --entrypoint "\
 echo
 
 echo "### Reloading nginx ..."
-docker-compose -f docker compose.prod.yml exec nginx nginx -s reload
+sudo docker-compose -f docker compose.prod.yml exec nginx nginx -s reload
