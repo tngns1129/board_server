@@ -73,4 +73,17 @@ esac
 if [ $staging -eq 1 ]; then staging_arg="--staging"; fi
 
 docker-compose -f docker-compose.yml run --rm --entrypoint "\
-  certbot certonly --webroot -w
+  certbot certonly --webroot -w /var/www/certbot \
+    $staging_arg \
+    $email_arg \
+    $domain_args \
+    --rsa-key-size $rsa_key_size \
+    --agree-tos \
+    --force-renewal" certbot
+echo
+
+# Nginx 재시작
+echo "Nginx를 다시 시작합니다..."
+docker-compose -f docker-compose.yml exec nginx nginx -s reload
+
+echo "모든 작업이 완료되었습니다."
