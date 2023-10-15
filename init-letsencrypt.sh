@@ -30,11 +30,14 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
   echo
 fi
 
+# 인증서 및 개인 키 디렉토리 생성 및 권한 설정
+echo "인증서 및 개인 키 디렉토리를 생성하고 권한을 설정합니다..."
+path="/etc/letsencrypt/live/$domains"
+mkdir -p "$path"
+chown -R ec2-user "$data_path"
+
 # 더미 인증서 생성
 echo "더미 인증서를 생성합니다..."
-path="/etc/letsencrypt/live/$domains"
-mkdir -p "$data_path/conf/live/$domains"
-chown -R ec2-user "$data_path"
 docker-compose -f docker-compose.yml run --rm --entrypoint "\
   openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1 \
     -keyout '$path/privkey.pem' \
@@ -70,17 +73,4 @@ esac
 if [ $staging -eq 1 ]; then staging_arg="--staging"; fi
 
 docker-compose -f docker-compose.yml run --rm --entrypoint "\
-  certbot certonly --webroot -w /var/www/certbot \
-    $staging_arg \
-    $email_arg \
-    $domain_args \
-    --rsa-key-size $rsa_key_size \
-    --agree-tos \
-    --force-renewal" certbot
-echo
-
-# Nginx 재시작
-echo "Nginx를 다시 시작합니다..."
-docker-compose -f docker-compose.yml exec nginx nginx -s reload
-
-echo "모든 작업이 완료되었습니다."
+  certbot certonly --webroot -w
