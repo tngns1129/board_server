@@ -85,8 +85,7 @@ DATABASES = {
         'HOST': 'db',
         'PORT': '3306',
         'OPTIONS': {
-            'CHARSET': 'utf8mb4',
-            'COLLATION': 'utf8mb4_unicode_ci',
+            'charset': 'utf8mb4',
         },
     }
 }
