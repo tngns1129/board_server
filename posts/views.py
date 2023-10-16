@@ -12,6 +12,12 @@ from posts.push_alarm import PushSend
 
 
 # Create your views here.
+def test(request):
+    if request.method == 'GET':
+        return HttpResponse('test')
+
+
+
 #######################################
 #   게시글 리스트 페이지     /post/
 # GET : 게시글 리스트
