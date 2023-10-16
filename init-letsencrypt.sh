@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(semo962046.duckdns.org)
+domains=(semo.monster)
 rsa_key_size=4096
 data_path="./certbot"
 email="semo962046@gmail.com" # Adding a valid address is strongly recommended
