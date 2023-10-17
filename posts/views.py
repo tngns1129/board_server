@@ -1,5 +1,7 @@
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -21,7 +23,7 @@ def test(request):
 #######################################
 #   게시글 리스트 페이지     /post/
 # GET : 게시글 리스트
-# POST : X
+# POST : 게시글 작성
 # PATCH : X
 # DELETE : X
 #######################################
@@ -29,42 +31,20 @@ def test(request):
 @api_view(('GET', 'POST', 'PATCH', 'DELETE'))
 def posts(request):
     if request.method == "GET":
+        page = request.GET.get('page')
         posts = Posts.objects.filter(deleted=0).order_by('-created_date')
-        serializer = PostSerializer(posts, many=True)
+        paginator = Paginator(posts, 10)
+        try:
+            page_obj = paginator.page(page)
+        except PageNotAnInteger:
+            page = 1
+            page_obj = paginator.page(page)
+        except EmptyPage:
+            page = paginator.num_pages
+            page_obj = paginator.page(page)
+
+        serializer = PostSerializer(page_obj, many=True)
         return JsonResponse(serializer.data, safe=False)
-
-    if request.method == "POST":
-        return HttpResponse("post list post")
-
-    if request.method == "PATCH":
-        return HttpResponse("post list patch")
-
-    if request.method == "DELETE":
-        return HttpResponse("post list delete")
-
-#######################################
-#   게시글 상세페이지   /post/detail
-# GET : 게시글 조회
-# POST : 게시글 작성
-# PATCH : 게시글 수정
-# DELETE : 게시글 삭제
-#######################################
-@csrf_exempt
-@api_view(('GET', 'POST', 'PATCH', 'DELETE'))
-def detail(request):
-    if request.method == "GET":
-        post_id = request.GET.get('post_id')
-        post = Posts.objects.filter(id=post_id).first()
-        content = Content.objects.filter(post_id=post_id).first()
-        d = dict(
-            title=post.title,
-            content=content.content,
-        )
-        data = dict(
-            content=d,
-            code='000'
-        )
-        return Response(data=data)
 
     if request.method == "POST":
         title = request.POST.get('title', None)
@@ -103,7 +83,44 @@ def detail(request):
         return Response(data=data)
 
     if request.method == "PATCH":
-        post_id = request.GET.get('post_id')
+        return HttpResponse("post list patch")
+
+    if request.method == "DELETE":
+        return HttpResponse("post list delete")
+
+#######################################
+#   게시글 상세페이지   /post/detail
+# GET : 게시글 조회
+# POST : X
+# PATCH : 게시글 수정
+# DELETE : 게시글 삭제
+#######################################
+
+@csrf_exempt
+@api_view(('GET', 'POST', 'PATCH', 'DELETE'))
+def detail(request, pk):
+    if request.method == "GET":
+        post_id = pk
+        try:
+            post = Posts.objects.get(id=pk)
+            content = Content.objects.filter(post_id=post_id).first()
+            d = dict(
+                title=post.title,
+                content=content.content,
+            )
+            data = dict(
+                content=d,
+                code='000'
+            )
+            return Response(data=data)
+        except Posts.DoesNotExist:
+            return HttpResponse('게시물을 찾을수 없습니다')
+
+    if request.method == "POST":
+        return HttpResponse("post detail post")
+
+    if request.method == "PATCH":
+        post_id = pk
         user_id = request.GET.get('user_id')
         post = Posts.objects.filter(id=post_id).first()
         user = Users.objects.filter(id=user_id).first()
@@ -140,7 +157,7 @@ def detail(request):
         return Response(data=data)
 
     if request.method == "DELETE":
-        post_id = request.GET.get('post_id')
+        post_id = pk
         user_id = request.GET.get('user_id')
         post = Posts.objects.filter(id=post_id).first()
         user = Users.objects.filter(id=user_id).first()
