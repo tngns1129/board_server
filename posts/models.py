@@ -26,7 +26,7 @@ class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     post_id = models.ForeignKey(Posts, related_name='post_comment', on_delete=models.CASCADE, db_column='post_id')
     user_id = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='user_id', related_name='user_comment')
-    content = models.CharField(max_length=100)
+    content = models.TextField(max_length=100)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     deleted = models.SmallIntegerField()

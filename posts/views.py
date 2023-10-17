@@ -34,17 +34,20 @@ def posts(request):
         page = request.GET.get('page')
         posts = Posts.objects.filter(deleted=0).order_by('-created_date')
         paginator = Paginator(posts, 10)
-        try:
-            page_obj = paginator.page(page)
-        except PageNotAnInteger:
-            page = 1
-            page_obj = paginator.page(page)
-        except EmptyPage:
-            page = paginator.num_pages
-            page_obj = paginator.page(page)
-
-        serializer = PostSerializer(page_obj, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        if page == '0':
+            serializer = PostSerializer(posts, many=True)
+            return JsonResponse(serializer.data, safe=False)
+        else:
+            try:
+                page_obj = paginator.page(page)
+            except PageNotAnInteger:
+                page = 1
+                page_obj = paginator.page(page)
+            except EmptyPage:
+                page = paginator.num_pages
+                page_obj = paginator.page(page)
+            serializer = PostSerializer(page_obj, many=True)
+            return JsonResponse(serializer.data, safe=False)
 
     if request.method == "POST":
         title = request.POST.get('title', None)

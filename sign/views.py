@@ -16,12 +16,11 @@ def index(request):
 
 @csrf_exempt
 @api_view(('GET', 'POST'))
-def sign(request):
-
-    if request.method == "GET":
-        username = request.GET.get('username', None)
-        password = request.GET.get('password', None)
-        token = request.GET.get('token', None)
+def signIn(request):
+    if request.method == "POST":
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+        token = request.POST.get('token', '')
 
         user = Users.objects.filter(username=username).first()
 
@@ -53,7 +52,9 @@ def sign(request):
                     code='002'
                 )
                 return Response(data=data)
-
+@csrf_exempt
+@api_view(('GET', 'POST'))
+def signUp(request):
     if request.method == "POST":
         id = uid.uuid4()
         username = request.POST.get('username', None)
